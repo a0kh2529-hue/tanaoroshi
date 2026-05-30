@@ -179,8 +179,9 @@ function persistData() {
   }
 }
 
-let items = loadItems();
-let nextId = loadNextId();
+const _loaded = loadItems();
+let items = _loaded.items;
+let nextId = _loaded.nextId;
 let editId = null, statusFilter = '', catFilter = '';
 const statuses = ['','ok','low','out'];
 
