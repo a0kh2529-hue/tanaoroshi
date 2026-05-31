@@ -92,7 +92,7 @@ body{font-family:-apple-system,sans-serif;background:#F5F5F7;color:#1C1C1E;min-h
     <div class="sheet-title" id="sheetTitle">商品を追加</div>
     <div class="field"><label>商品名 *</label><input type="text" id="fName" placeholder="例: INTENSO"></div>
     <div class="field"><label>カテゴリ</label><input type="text" id="fCat" placeholder="例: コーヒー"></div>
-    <div class="field"><label>在庫数</label><input type="number" id="fQty" min="0" value="0" inputmode="numeric"></div>
+    <div class="field"><label>在庫数</label><div style="display:flex;gap:8px"><input type="number" id="fQty" min="0" value="0" inputmode="numeric" style="flex:1"><input type="text" id="fUnit" placeholder="例: 個・箱・本" style="flex:1"></div></div>
     <div class="field"><label>最低在庫数</label><input type="number" id="fMin" min="0" value="1" inputmode="numeric"></div>
     <div class="field"><label>単価（円）</label><input type="number" id="fPrice" min="0" value="0" inputmode="numeric"></div>
     <div class="sheet-btns">
@@ -106,21 +106,21 @@ body{font-family:-apple-system,sans-serif;background:#F5F5F7;color:#1C1C1E;min-h
 
 <script>
 var DEFAULT_ITEMS = [
-  {id:9,  name:'CAFFE CARAMELLO', cat:'コーヒー', qty:0, min:1, price:0},
-  {id:10, name:'INTENSO', cat:'コーヒー', qty:0, min:1, price:0},
-  {id:11, name:'RISTRETTO', cat:'コーヒー', qty:0, min:1, price:0},
-  {id:12, name:'FORTE', cat:'コーヒー', qty:0, min:1, price:0},
-  {id:13, name:'LEGGRO', cat:'コーヒー', qty:0, min:1, price:0},
-  {id:14, name:'オリジン コンゴ オーガニック', cat:'コーヒー', qty:0, min:1, price:0},
-  {id:15, name:'スターバックス ブロンド エスプレッソ', cat:'コーヒー', qty:0, min:1, price:0},
-  {id:16, name:'オリジン ブラジル オーガニック', cat:'コーヒー', qty:0, min:1, price:0},
-  {id:17, name:'オリジン グアテマラ', cat:'コーヒー', qty:0, min:1, price:0},
-  {id:18, name:'アイス インテンソ', cat:'コーヒー', qty:0, min:1, price:0},
-  {id:19, name:'オリジン コロンビア オーガニック', cat:'コーヒー', qty:0, min:1, price:0},
-  {id:20, name:'デカフェナート', cat:'コーヒー', qty:0, min:1, price:0},
-  {id:21, name:'おしぼり（香りなし）', cat:'おしぼり', qty:0, min:1, price:0},
-  {id:22, name:'おしぼり（オレンジ）', cat:'おしぼり', qty:0, min:1, price:0},
-  {id:23, name:'おしぼり（グリーン）', cat:'おしぼり', qty:0, min:1, price:0}
+  {id:9,  name:'CAFFE CARAMELLO', cat:'コーヒー', qty:0, min:1, price:0, unit:''},
+  {id:10, name:'INTENSO', cat:'コーヒー', qty:0, min:1, price:0, unit:''},
+  {id:11, name:'RISTRETTO', cat:'コーヒー', qty:0, min:1, price:0, unit:''},
+  {id:12, name:'FORTE', cat:'コーヒー', qty:0, min:1, price:0, unit:''},
+  {id:13, name:'LEGGRO', cat:'コーヒー', qty:0, min:1, price:0, unit:''},
+  {id:14, name:'オリジン コンゴ オーガニック', cat:'コーヒー', qty:0, min:1, price:0, unit:''},
+  {id:15, name:'スターバックス ブロンド エスプレッソ', cat:'コーヒー', qty:0, min:1, price:0, unit:''},
+  {id:16, name:'オリジン ブラジル オーガニック', cat:'コーヒー', qty:0, min:1, price:0, unit:''},
+  {id:17, name:'オリジン グアテマラ', cat:'コーヒー', qty:0, min:1, price:0, unit:''},
+  {id:18, name:'アイス インテンソ', cat:'コーヒー', qty:0, min:1, price:0, unit:''},
+  {id:19, name:'オリジン コロンビア オーガニック', cat:'コーヒー', qty:0, min:1, price:0, unit:''},
+  {id:20, name:'デカフェナート', cat:'コーヒー', qty:0, min:1, price:0, unit:''},
+  {id:21, name:'おしぼり（香りなし）', cat:'おしぼり', qty:0, min:1, price:0, unit:''},
+  {id:22, name:'おしぼり（オレンジ）', cat:'おしぼり', qty:0, min:1, price:0, unit:''},
+  {id:23, name:'おしぼり（グリーン）', cat:'おしぼり', qty:0, min:1, price:0, unit:''}
 ];
 
 var KEY = 'tana_v3';
@@ -230,6 +230,7 @@ function render() {
         '<div class="qty-row">' +
           '<button class="qty-btn" data-adj="' + item.id + '" data-d="-1">−</button>' +
           '<span class="qty-num">' + item.qty + '</span>' +
+          '<span style="font-size:12px;color:#8E8E93;min-width:20px">' + (item.unit||'') + '</span>' +
           '<button class="qty-btn" data-adj="' + item.id + '" data-d="1">＋</button>' +
         '</div>' +
         badge(getStatus(item)) +
@@ -271,12 +272,14 @@ function openModal(id) {
     document.getElementById('fName').value = item.name;
     document.getElementById('fCat').value = item.cat;
     document.getElementById('fQty').value = item.qty;
+    document.getElementById('fUnit').value = item.unit || '';
     document.getElementById('fMin').value = item.min;
     document.getElementById('fPrice').value = item.price;
   } else {
     document.getElementById('fName').value = '';
     document.getElementById('fCat').value = '';
     document.getElementById('fQty').value = '0';
+    document.getElementById('fUnit').value = '';
     document.getElementById('fMin').value = '1';
     document.getElementById('fPrice').value = '0';
   }
@@ -299,14 +302,15 @@ document.getElementById('saveBtn').addEventListener('click', function() {
   var name = document.getElementById('fName').value.trim();
   if (!name) { alert('商品名を入力してください'); return; }
   var cat = document.getElementById('fCat').value.trim() || '未分類';
+  var unit = document.getElementById('fUnit').value.trim();
   var qty = Math.max(0, parseInt(document.getElementById('fQty').value) || 0);
   var min = Math.max(0, parseInt(document.getElementById('fMin').value) || 0);
   var price = Math.max(0, parseInt(document.getElementById('fPrice').value) || 0);
   if (editId) {
     var item = items.find(function(x){return x.id===editId;});
-    if (item) { item.name=name; item.cat=cat; item.qty=qty; item.min=min; item.price=price; }
+    if (item) { item.name=name; item.cat=cat; item.qty=qty; item.unit=unit; item.min=min; item.price=price; }
   } else {
-    items.push({id: nextId++, name: name, cat: cat, qty: qty, min: min, price: price});
+    items.push({id: nextId++, name: name, cat: cat, qty: qty, unit: unit, min: min, price: price});
   }
   save();
   closeModal();
